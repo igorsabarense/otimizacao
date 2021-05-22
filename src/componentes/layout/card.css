@@ -1,0 +1,25 @@
+.Card {
+	border-radius: 10px;
+	overflow: hidden;
+	border: 3px solid;
+	margin: 10px;
+	display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+.Card .Title {
+	color: rgb(253, 244, 244);
+	padding: 5px 0px;
+	display: flex;
+	justify-content: center;
+}
+
+.Card .Content {
+	background-color: rgb(255, 255, 255);
+	color: rgb(12, 12, 12);
+	padding: 20px 20px 20px 20px;
+	flex: 1;
+}
+
