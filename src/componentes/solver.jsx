@@ -1,5 +1,8 @@
 import React, {Component} from 'react'
-const SimpleSimplex = require('simple-simplex');class Solver extends Component {
+
+const SimpleSimplex = require('simple-simplex');
+
+class Solver extends Component {
 
 constructor(props) {
     super(props);
@@ -30,32 +33,28 @@ handleChangeCapital = (event) => (this.setState({
     }
 }))
 
-handleChangePerfilInvestidor = (event) => (this.setState({
+handleChangePerfilInvestidor = (event) => (
+    this.setState({
     modelo: {
         ...this.state.modelo,
         'perfil': event.target.value
-    }
-}))
+    }})
+)
 
-render() {
 
-    const SimpleSimplex = require('simple-simplex');
-
-    // initialize a solver
+callSolver(){
     const solver = new SimpleSimplex({
         objective: {
-            a: 70,
-            b: 210,
-            c: 140,
-            d: 400
+            a: this.state.idade,
+            b: this.state.capital,
+            c: 0,
         },
         constraints: [
             {
                 namedVector: {
                     a: 1,
                     b: 1,
-                    c: 1,
-                    d: 1
+                    c: 1
                 },
                 constraint: '>=',
                 constant: 100
@@ -63,8 +62,7 @@ render() {
                 namedVector: {
                     a: 5,
                     b: 4,
-                    c: 4,
-                    d: 1
+                    c: 4
                 },
                 constraint: '<=',
                 constant: 480
@@ -72,8 +70,7 @@ render() {
                 namedVector: {
                     a: 40,
                     b: 20,
-                    c: 30,
-                    d: 1
+                    c: 30
                 },
                 constraint: '<=',
                 constant: 3200
@@ -82,11 +79,21 @@ render() {
         optimizationType: 'max'
     });
 
+    // initialize a solver
+  
+
     // call the solve method with a method name
     const result = solver.solve({methodName: 'simplex'});
 
     // see the solution and meta data
     console.log({solution: result.solution, isOptimal: result.details.isOptimal});
+}
+
+render() {
+
+  
+
+    console.log(this.state)
 
 
     return (
@@ -106,16 +113,16 @@ render() {
                         onChange={
                             this.handleChangePerfilInvestidor
                     }>
-                        <option>
+                        <option value = "0.25">
                             Conservador
                         </option>
-                        <option>
+                        <option value = "0.50">
                             Moderado
                         </option>
-                        <option>
+                        <option value = "0.75">
                             Agressivo
                         </option>
-                        <option>
+                        <option value = "1.0">
                             Elon Musk
                         </option>
                     </select>
