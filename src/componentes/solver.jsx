@@ -48,7 +48,7 @@ class Solver extends Component {
     }))
 
 
-    getRentabilidades(perfil){
+    getRentabilidades(perfil, rendaFixa, rendaVariavel){
         
         let modelo = {
             constraintTesouro: '',
@@ -64,34 +64,34 @@ class Solver extends Component {
         switch(perfil){
             case 'Conservador':
                 modelo = {
-                    constraintTesouro: 0.30,
-                    constraintCDB: 0.25 , 
-                    constraintDebenture: 0.21,
-                    constraintFII: 0.12,
-                    constraintAcao: 0.10,
-                    constraintCripto: 0.02 
+                    constraintTesouro: 0.80 * rendaFixa,
+                    constraintCDB: 0.10  * rendaFixa, 
+                    constraintDebenture: 0.10 * rendaFixa,
+                    constraintFII: 0.80 * rendaVariavel,
+                    constraintAcao: 0.19 * rendaVariavel,
+                    constraintCripto: 0.01 * rendaVariavel 
                 }
             break;
 
             case 'Moderado':
                 modelo = {
-                    constraintTesouro: 0.17,
-                    constraintCDB: 0.18 , 
-                    constraintDebenture: 0.16,
-                    constraintFII: 0.24,
-                    constraintAcao: 0.14,
-                    constraintCripto: 0.11 
+                    constraintTesouro: 0.25 * rendaFixa,
+                    constraintCDB: 0.25 * rendaFixa,
+                    constraintDebenture: 0.50 * rendaFixa,
+                    constraintFII: 0.55 * rendaVariavel,
+                    constraintAcao: 0.45 * rendaVariavel,
+                    constraintCripto: 0.10 * rendaVariavel
                 }
             break;
 
             case 'Agressivo':
                 modelo = {
-                    constraintTesouro: 0.08,
-                    constraintCDB: 0.10 , 
-                    constraintDebenture: 0.12,
-                    constraintFII: 0.25,
-                    constraintAcao: 0.28,
-                    constraintCripto: 0.17
+                    constraintTesouro: 0.10 * rendaFixa,
+                    constraintCDB: 0.30 * rendaFixa, 
+                    constraintDebenture: 0.60 * rendaFixa,
+                    constraintFII: 0.2 * rendaVariavel,
+                    constraintAcao: 0.3 * rendaVariavel,
+                    constraintCripto: 0.5 * rendaVariavel
                 }
             break;
         }
@@ -103,36 +103,23 @@ class Solver extends Component {
     setSolverResults = () => {
 
 
-            /*  
-            *   MAX Lucro = 0.03TESOURO + 0.04CDB + 0.06DEB+ 0.08FII + 0.12ACOES + 0.16CRIPTO
-            *   Sujeito a: 
-            *           TESOURO + CDB + DEBENTURES <= rendaFixa * CAPITAL  
-                        FII + ACOES + CRIPTO <= rendaVariavel * CAPITAL 
-                        TESOURO + CDB + DB +FII + ACOES+ CRIPTO <= CAPITAL 
-                        TESOURO <= 0.20 * capital                                           CONSTRAINTS MUDAM DE ACORDO COM O PERFIL
-                        CDB <= 0.19 * capital
-                        DEBENTURES <= 0.18 * capital
-                        FII <= 0.16 * capital
-                        ACOES <= 0.15 * capital
-                        CRIPTO <= 0.12 * capital
-
-            */
-
         const {idade, capital, perfil} = this.state.modelo;
         const rendaFixa = idade / 100;
         const rendaVariavel = (100 - idade) / 100;
         
 
-        let modeloPerfil = this.getRentabilidades(perfil)
+        let modeloPerfil = this.getRentabilidades(perfil,rendaFixa,rendaVariavel)
 
         // constraints
         const rendaFixaCapital = rendaFixa * capital;
         const rendaVariavelCapital = rendaVariavel * capital;
+
+
         const consTesouro = modeloPerfil.constraintTesouro * capital;
         const consCDB = modeloPerfil.constraintCDB * capital;
         const consDebenture = modeloPerfil.constraintDebenture * capital;
         const consFII = modeloPerfil.constraintFII * capital;
-        const consAcoes = modeloPerfil.constraintAcoes * capital;
+        const consAcoes = modeloPerfil.constraintAcao * capital;
         const consCripto = modeloPerfil.constraintCripto * capital;
 
         var solver = require("./../../../node_modules/javascript-lp-solver/src/solver"),
@@ -141,7 +128,7 @@ class Solver extends Component {
                 "optimize": "rentabilidade",
                 "opType": "max",
                 "constraints": {
-                    "capitalMaximo": {
+                    "rendaVariavelMaximo": {
                         "max": capital
                     },
                     "capitalRendaFixa": {
@@ -216,7 +203,7 @@ class Solver extends Component {
             };
 
         results = solver.Solve(model);
-        console.log(`result`, results)
+       
         this.setState({solver: {
                 results
             }});
