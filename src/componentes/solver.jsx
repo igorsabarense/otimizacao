@@ -25,7 +25,6 @@ class Solver extends Component {
 
     }
 
-
     handleChangeIdade = (event) => (this.setState({
         modelo: {
             ...this.state.modelo,
@@ -104,14 +103,13 @@ class Solver extends Component {
     setSolverResults = () => {
 
 
-            /*
+            /*  
             *   MAX Lucro = 0.03TESOURO + 0.04CDB + 0.06DEB+ 0.08FII + 0.12ACOES + 0.16CRIPTO
             *   Sujeito a: 
-            *           TESOURO + CDB + DEBENTURES <= rendaFixa * CAPITAL  240.000
-                        FII + ACOES + CRIPTO <= rendaVariavel * CAPITAL 760.000
-                        TESOURO + CDB + DB +FII + ACOES+ CRIPTO <= CAPITAL 1.000.000
-
-                        TESOURO <= 0.20 * capital
+            *           TESOURO + CDB + DEBENTURES <= rendaFixa * CAPITAL  
+                        FII + ACOES + CRIPTO <= rendaVariavel * CAPITAL 
+                        TESOURO + CDB + DB +FII + ACOES+ CRIPTO <= CAPITAL 
+                        TESOURO <= 0.20 * capital                                           CONSTRAINTS MUDAM DE ACORDO COM O PERFIL
                         CDB <= 0.19 * capital
                         DEBENTURES <= 0.18 * capital
                         FII <= 0.16 * capital
